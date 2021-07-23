@@ -26,7 +26,7 @@ class Main(QWidget):
 	def setupUi(self, MainWindow):
 		MainWindow.resize(300, 350)
 		self.centralwidget = QtWidgets.QWidget(MainWindow)
-		#self.centralwidget.setObjectName("centralwidget")
+		self.centralwidget.setObjectName("centralwidget")
 		self.line = QtWidgets.QFrame(self.centralwidget)
 		self.line.setGeometry(QtCore.QRect(0, 438, 321, 4))
 		self.line.setLineWidth(2)
