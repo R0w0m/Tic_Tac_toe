@@ -27,55 +27,19 @@ class Main(QWidget):
 		MainWindow.resize(300, 350)
 		self.centralwidget = QtWidgets.QWidget(MainWindow)
 		self.centralwidget.setObjectName("centralwidget")
-		self.line = QtWidgets.QFrame(self.centralwidget)
-		self.line.setGeometry(QtCore.QRect(0, 438, 321, 4))
-		self.line.setLineWidth(2)
-		self.line.setFrameShape(QtWidgets.QFrame.HLine)
-		self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
-		self.line.setObjectName("line")
-		self.line_2 = QtWidgets.QFrame(self.centralwidget)
-		self.line_2.setGeometry(QtCore.QRect(150, 0, 20, 681))
-		self.line_2.setFrameShape(QtWidgets.QFrame.VLine)
-		self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
-		self.line_2.setObjectName("line_2")
-		self.line_3 = QtWidgets.QFrame(self.centralwidget)
-		self.line_3.setGeometry(QtCore.QRect(230, 0, 20, 681))
-		self.line_3.setFrameShape(QtWidgets.QFrame.VLine)
-		self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
-		self.line_3.setObjectName("line_3")
-		self.line_4 = QtWidgets.QFrame(self.centralwidget)
-		self.line_4.setGeometry(QtCore.QRect(70, 0, 20, 681))
-		self.line_4.setFrameShape(QtWidgets.QFrame.VLine)
-		self.line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
-		self.line_4.setObjectName("line_4")
-		self.line_5 = QtWidgets.QFrame(self.centralwidget)
-		self.line_5.setGeometry(QtCore.QRect(0, 559, 321, 2))
-		self.line_5.setLineWidth(2)
-		self.line_5.setFrameShape(QtWidgets.QFrame.HLine)
-		self.line_5.setFrameShadow(QtWidgets.QFrame.Sunken)
-		self.line_5.setObjectName("line_5")
-		self.line_2.raise_()
-		self.line_3.raise_()
-		self.line_4.raise_()
-		self.line_5.raise_()
-		self.line.raise_()
+		self.centralwidget.setLayout(QtWidgets.QGridLayout())
 
-		def press_start():
-			self.start_bt.deleteLater()
+		self.label_bot = QtWidgets.QLabel("Bot")#first label
+		self.label_bot.setStyleSheet('Background: rgb(255,150,150); border:none; font-size: 22px')
+		self.centralwidget.layout().addWidget(self.label_bot, 0, 0)
+		self.label_user = QtWidgets.QLabel("You")#second label
+		self.label_user.setStyleSheet('Background: rgb(150,150,255); border:none; font-size: 22px')
+		self.centralwidget.layout().addWidget(self.label_user, 0, 2)
+		self.label_ = QtWidgets.QLabel()#f"{bot_score}:{user_score}")#third label
+		self.label_.setStyleSheet('Background: rgb(255,255,255); border: 2px dashed grary; font-size: 22px')
+		self.centralwidget.layout().addWidget(self.label_, 0, 1)
 
-		self.start_bt = QtWidgets.QPushButton(self.centralwidget)
-		self.start_bt.setGeometry(QtCore.QRect(100, 0, 81, 0))#131
-		self.start_bt.setText("Start")
-		#self.start_bt.setStyleSheet("background-color:black;\n""border:none;")
-		self.start_bt.raise_()
-		self.start_bt.clicked.connect(press_start)
 
-		self.buts=[]
-		self.sbuts=[]
-
-		self.timer = QtCore.QTimer()
-		self.timer.timeout.connect(self.tmr)
-		self.timer.start(3)
 
 
 	def tmr(self):
