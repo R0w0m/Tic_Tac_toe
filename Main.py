@@ -18,99 +18,106 @@ class Main(QWidget):
 	def __init__(self):
 		super().__init__()
 		self.setupUi(self)
-		self.plits([1,3])
 
 		self.show()
 
 
 	def setupUi(self, MainWindow):
-		MainWindow.resize(300, 350)
+		MainWindow.resize(330, 367)
 		self.centralwidget = QtWidgets.QWidget(MainWindow)
 		self.centralwidget.setObjectName("centralwidget")
 		self.centralwidget.setLayout(QtWidgets.QGridLayout())
 
+		self.user_score = 0
+		self.bot_score = 0
+		self.A1 = "X"
+		self.A2 = "O"
+		self.bot_first = False
+		self.winner_list = []
+		self.field = [[None] * 3 for i in range(3)]
+		self.buttons = []
+
+		self.start()
+
+
+
+
+	def start(self):
 		self.label_bot = QtWidgets.QLabel("Bot")#first label
 		self.label_bot.setStyleSheet('Background: rgb(255,150,150); border:none; font-size: 22px')
 		self.centralwidget.layout().addWidget(self.label_bot, 0, 0)
 		self.label_user = QtWidgets.QLabel("You")#second label
 		self.label_user.setStyleSheet('Background: rgb(150,150,255); border:none; font-size: 22px')
 		self.centralwidget.layout().addWidget(self.label_user, 0, 2)
-		self.label_ = QtWidgets.QLabel()#f"{bot_score}:{user_score}")#third label
+		self.label_ = QtWidgets.QLabel(f"{self.bot_score}:{self.user_score}")#third label
 		self.label_.setStyleSheet('Background: rgb(255,255,255); border: 2px dashed grary; font-size: 22px')
 		self.centralwidget.layout().addWidget(self.label_, 0, 1)
 
 
+		for i in range(9):
+			x = self.get_XY(i)[0]
+			y = self.get_XY(i)[1]
+			but = QtWidgets.QPushButton()
+			but.clicked.connect(lambda event, i=i: self.user_move(i))
+			self.centralwidget.layout().addWidget(but, x+1, y)
+			but.setStyleSheet('Background: rgb(200,200,200); border:none')
+			but.setFixedSize(100, 100)
+			self.buttons.append(but)
 
 
-	def tmr(self):
-		for x in self.buts:
-			x[2]+=1
-			if x[2] <= 131:
-				x[0].setGeometry(x[1], 0, 81, x[2])
-			else:
-				x[0].setGeometry(x[1], x[2], 81, 131)
-
-		for x in self.sbuts:
-			x[2]+=1
-			if x[2] <= 131:
-				x[0].setGeometry(x[1], 0, 81, x[2])
-			else:
-				x[0].setGeometry(x[1], x[2], 81, 131)
 
 
-	def plits(self, a):
-		for x in a:
-			if type(x) is int:
-				self.add_but(x)
-			else:
-				self.add_but(x[0])
-				self.add_second_but(x[1])
+	def user_move(self, num):#ход пользователя
+		x = self.get_XY(num)[0]
+		y = self.get_XY(num)[1]
+		if  self.field[x][y] == None:
+			self.buttons[num].setText(self.A1)
+			self.buttons[num].setStyleSheet('Background: rgb(150,150,255); border:none; font-size: 50px; ')
+			self.field[x][y] = 1
+			self.user_score += 1
+			self.update_score()
+		if x+y == 4 and self.field[x][y] != None:
+			self.check_winner()
+
+
+	def check_winner(self):
+		for i in range(3):
+			if self.field[i][0] == self.field[i][1] == self.field[i][2]:
+				self.winner_list.append([self.field[i][0], self.field[i][1], self.field[i][2]])
+			if self.field[0][i] == self.field[1][i] == self.field[2][i]:
+				self.winner_list.append([self.field[0][i], self.field[1][i], self.field[2][i]])
+		if self.field[0][0] == self.field[1][1] == self.field[2][2]:
+			self.winner_list.append([self.field[i][0], self.field[i][1], self.field[i][2]])
+		if self.field[2][0] == self.field[1][1] == self.field[0][2]:
+			self.winner_list.append([self.field[i][0], self.field[i][1], self.field[i][2]])
+	
+		if len(self.winner_list) > 0:
+			relaunch_game()
+
+
+
+#____________         ____________
+#____________Completed____________>>>
+
+
+	def get_XY(self, i):
+		x = i//3
+		y = i-(i//3)*3
+		return [x,y]
+
+
+	def update_score(self):
+		self.label_.setText(f"{self.bot_score}:{self.user_score}")
+		self.label_.setStyleSheet('Background: rgb(255,255,255); border: 2px dashed grary; font-size: 22px')
+
+
+
+
+
+
 				
 
-	def add_but(self, bt_num):
-		if bt_num == 1:
-			y = -1
-		if bt_num == 2:
-			y = 79
-		if bt_num == 3:
-			y = 159
-		if bt_num == 4:
-			y = 239
 
-		def clicked_():
-			bt.deleteLater()
-			del self.buts[0]
-
-		bt = QtWidgets.QPushButton(self.centralwidget)
-		bt.setGeometry(QtCore.QRect(y, 0, 81, 0))#131
-		bt.setStyleSheet("background-color:black;\n""border:none;")
-		bt.raise_()
-		self.buts.append([bt, y, 0])
-
-		bt.clicked.connect(clicked_)
-
-
-	def add_second_but(self, bt_num):
-		if bt_num == 1:
-			y = -1
-		if bt_num == 2:
-			y = 79
-		if bt_num == 3:
-			y = 159
-		if bt_num == 4:
-			y = 239
-
-		def clicked_():
-			bt.deleteLater()
-			del self.sbuts[0]
-
-		bt = QtWidgets.QPushButton(self.centralwidget)
-		bt.setGeometry(QtCore.QRect(y, 0, 81, 0))#131
-		bt.setStyleSheet("background-color:black;\n""border:none;")
-		bt.raise_()
-		self.sbuts.append([bt, y, 0])
-
-		bt.clicked.connect(clicked_)
 
 if __name__ == '__main__':
 
@@ -122,150 +129,15 @@ if __name__ == '__main__':
 
 
 '''
-        self.setGeometry(300, 300, 300, 220)
-        self.setWindowTitle('Записки')
-        self.setWindowIcon(QIcon('web.png'))     
 
+git commands
 
-        # Вот ниже находится label, который нужно центрировать.
-        lbl1 = QLabel('Привет! Что нового?', self)
-        lbl1.setAlignment(Qt.AlignCenter)                      #  (Qt.AlignVCenter)
-#        #lbl1.move(0, 0) #если раскоментировать, чуда не произойдёт
-
-        btn = QPushButton('Button', self) # Бонусный вопрос: Как центрировать кнопку? :з
-        btn.setToolTip('This is a <b>QPushButton</b> widget')
-        btn.clicked.connect(self.test)
-#        btn.resize(btn.sizeHint())
-#        btn.move(3, 15)
-        
-        layout = QVBoxLayout(self)                         # +++
-        layout.addWidget(lbl1)                             # +++
-        layout.addWidget(btn)                              # +++    
-   
-#        self.show()
-
-    def test(self):
-        print('test удался')'''
-        
-        
-
+git init
+git status
+git commit -m "comentary"
+git push -u origin main
 
 
 '''
-app = QtWidgets.QApplication([])
- 
-#user_score = 0
-#bot_score = 0
-#A1 = "X"
-#A2 = "O"
-#bot_first = False
-#winner_list = []
-#field = [[None] * 3 for i in range(3)]
-#buttons = []
-#
-#window = QtWidgets.QWidget()#window
-#window.resize(300, 350)
-#window.setLayout(QtWidgets.QGridLayout())
-
-
-
-
-
-
-def user_move(num):#ход пользователя
-	global user_score
-	x = get_XY(num)[0]
-	y = get_XY(num)[1]
-	if field[x][y] == None:
-		buttons[num].setText(A1)
-		buttons[num].setStyleSheet('Background: rgb(150,150,255); border:none; font-size: 50px; ')
-		field[x][y] = 1
-		user_score += 1
-		update_score()
-	if x+y == 4 and field[x][y] != None:
-		check_winner()
-	
-def bot_move():#ход бота
-	x = get_XY(i)[0]
-	y = get_XY(i)[1]
-	if field[x][y] == None:
-		field[x][y] = 0
-
-
-
-def check_winner():
-	for i in range(3):
-		if field[i][0] == field[i][1] == field[i][2]:
-			winner_list.append([field[i][0], field[i][1], field[i][2]])
-		if field[0][i] == field[1][i] == field[2][i]:
-			winner_list.append([field[0][i], field[1][i], field[2][i]])
-	if field[0][0] == field[1][1] == field[2][2]:
-		winner_list.append([field[i][0], field[i][1], field[i][2]])
-	if field[2][0] == field[1][1] == field[0][2]:
-		winner_list.append([field[i][0], field[i][1], field[i][2]])
-
-	if len(winner_list) > 0:
-		relaunch_game()
-
-
-
-
-
-
-
-
-
-
-def relaunch_game():
-	global field
-	for i in range(9):
-		buttons[i].setStyleSheet('Background: rgb(200,200,200); border:none')
-		buttons[i].setText("")
-	field = [[None] * 3 for i in range(3)]
-	winner_list.clear()
-	update_score()
-
-
-
-def update_score():
-	label_.setText(f"{bot_score}:{user_score}")
-	label_.setStyleSheet('Background: rgb(255,255,255); border: 2px dashed grary; font-size: 22px')
-
-#____________         ____________
-#____________Completed____________>>>
-
-
-def get_XY(i):
-	x = i//3
-	y = i-(i//3)*3
-	return [x,y]
-
-
-def start():
-	label_bot = QtWidgets.QLabel("Bot")#first label
-	label_bot.setStyleSheet('Background: rgb(255,150,150); border:none; font-size: 22px')
-	window.layout().addWidget(label_bot, 0, 0)
-	label_user = QtWidgets.QLabel("You")#second label
-	label_user.setStyleSheet('Background: rgb(150,150,255); border:none; font-size: 22px')
-	window.layout().addWidget(label_user, 0, 2)
-	label_ = QtWidgets.QLabel(f"{bot_score}:{user_score}")#third label
-	label_.setStyleSheet('Background: rgb(255,255,255); border: 2px dashed grary; font-size: 22px')
-	window.layout().addWidget(label_, 0, 1)
-	
-	for i in range(9):
-		x = get_XY(i)[0]
-		y = get_XY(i)[1]
-		but = QtWidgets.QPushButton()
-		but.clicked.connect(lambda event, i=i: user_move(i))
-		window.layout().addWidget(but, x+1, y)
-		but.setStyleSheet('Background: rgb(200,200,200); border:none')
-		but.setFixedSize(100, 100)
-		buttons.append(but)
- 
-start()
-
-window.show()
- 
-app.exec_()
-
-'''
+        
+        
