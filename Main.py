@@ -23,7 +23,7 @@ class Main(QWidget):
 		self.centralwidget.setObjectName("centralwidget")
 		self.centralwidget.setLayout(QtWidgets.QGridLayout())
 
-		self.bot_first = False
+		self.bot_first = False # True/False
 		self.difficulty = None
 		# Easy    = 1
 		# Normal  = 2
