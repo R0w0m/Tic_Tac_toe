@@ -39,6 +39,7 @@ class Main(QWidget):
 		self.winner_list = []
 		self.field = [[None] * 3 for i in range(3)]
 		self.buttons = []
+		self.bot_move_num = 0
 
 		self.start()
 
@@ -50,10 +51,10 @@ class Main(QWidget):
 		self.start_but.setGeometry(100, 100)
 
 	def start(self):
-		self.label_bot = QtWidgets.QLabel("Bot")
+		self.label_bot = QtWidgets.QLabel("  Bot")
 		self.label_bot.setStyleSheet('Background: rgb(255,150,150); border:none; font-size: 22px')
 		self.centralwidget.layout().addWidget(self.label_bot, 0, 0)
-		self.label_user = QtWidgets.QLabel("You")
+		self.label_user = QtWidgets.QLabel("  You")
 		self.label_user.setStyleSheet('Background: rgb(150,150,255); border:none; font-size: 22px')
 		self.centralwidget.layout().addWidget(self.label_user, 0, 2)
 		self.label_ = QtWidgets.QLabel(f"{self.bot_score}:{self.user_score}")
@@ -100,8 +101,18 @@ class Main(QWidget):
 				self.buttons[num].setStyleSheet('Background: rgb(255,150,150); border:none; font-size: 50px; ')
 				self.field[x][y] = 0
 
+
 	# Логика бота(пока просто рандомные позиции)
 	def bot_logic(self):
+		#dct = {
+		#0:[0,0],
+		#1:[0,2],
+		#2:[1,1],
+		#3:[2,1],
+		#4:[0,0]
+		#}
+		#self.bot_move_num += 1
+		#return dct[self.bot_move_num -1]
 		free_positions = []
 		for j in range(9):
 			XY = self.get_XY(j)
@@ -132,7 +143,7 @@ class Main(QWidget):
 
 
 		# Если нашлось "3 в ряд" и пустые клетки >>>
-		if len(self.winner_list) > 0 or self.field_is_full():
+		if self.winner_list:
 			self.game_not_stop = False
 			x = None # 0 - победил бот, 1 - победил юзер
 			if self.field[self.winner_list[0][0][0]][self.winner_list[0][0][1]] == 1:
@@ -148,15 +159,26 @@ class Main(QWidget):
 					self.buttons[self.get_num(cage[0],cage[1])].setStyleSheet(f'Background: rgb({150+(105*(1-x))},150,{150+(105*x)}); border: 5px solid rgb(110,255,110); font-size: 50px')
 					if cage[0] == cage[1] == 1:
 						cantral_butt_w = "border:5px solid rgb(110,255,110);"
+			# Restart button >>>
+			clr = "200,200,200"
+			if self.field[1][1] != None:
+				clr = "150,150,255" if self.field[1][1] == 1 else "255,150,150"
+			self.buttons[4].setText("Restart")
+			self.buttons[4].setStyleSheet(f'Background: rgb({clr}); {cantral_butt_w} font-size: 20px; ')
+
+		if self.field_is_full():
 			self.game_not_stop = False
 			# Restart button >>>
+			clr = "200,200,200"
+			if self.field[1][1] != None:
+				clr = "150,150,255" if self.field[1][1] == 1 else "255,150,150"
 			self.buttons[4].setText("Restart")
-			self.buttons[4].setStyleSheet(f'Background: rgb({150+(105*(1-x))},150,{150+(105*x)}); {cantral_butt_w} font-size: 20px; ')
-			#self.buttons[4].clicked.connect(lambda event: self.relaunch_game())
+			self.buttons[4].setStyleSheet(f'Background: rgb({clr}); border: none; font-size: 20px; ')
 			
 
 	# Перезапуск игры, очистка поля
 	def relaunch_game(self):
+		self.bot_move_num = 0
 		for i in range(9):
 			self.buttons[i].setStyleSheet('Background: rgb(200,200,200); border:none')
 			self.buttons[i].setText("")
@@ -169,8 +191,10 @@ class Main(QWidget):
 
 
 	def field_is_full(self):
-		print(self.field)
-		return None in [cage for cage in self.field]
+		for i in self.field:
+			if None in i:
+				return False
+		return True
 
 	def get_num(self,x,y):
 		return x*3+y
@@ -181,7 +205,7 @@ class Main(QWidget):
 		return [x,y]
 
 	def update_score(self):
-		self.label_.setText(f"{self.bot_score}:{self.user_score}")
+		self.label_.setText(f"{self.bot_score}:{int(self.user_score/2)}")
 		self.label_.setStyleSheet('Background: rgb(255,255,255); border: 2px dashed grary; font-size: 22px')
 
 if __name__ == '__main__':
