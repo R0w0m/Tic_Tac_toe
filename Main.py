@@ -19,6 +19,7 @@ class Main(QWidget):
 
 	def setupUi(self, MainWindow):
 		MainWindow.resize(330, 367)
+		MainWindow.setWindowTitle("Tic Tac Toe")
 		self.centralwidget = QtWidgets.QWidget(MainWindow)
 		self.centralwidget.setObjectName("centralwidget")
 		self.centralwidget.setLayout(QtWidgets.QGridLayout())
@@ -102,17 +103,42 @@ class Main(QWidget):
 				self.field[x][y] = 0
 
 
-	# Логика бота(пока просто рандомные позиции)
+	# Логика бота
 	def bot_logic(self):
-		#dct = {
-		#0:[0,0],
-		#1:[0,2],
-		#2:[1,1],
-		#3:[2,1],
-		#4:[0,0]
-		#}
-		#self.bot_move_num += 1
-		#return dct[self.bot_move_num -1]
+
+		# Проверка по вертикали и горизонтали >>>
+		for i in range(3):
+			if self.field[i][0] == self.field[i][1] != self.field[i][2] == None:# 12 3
+				return [i,2]
+			if self.field[i][0] == self.field[i][2] != self.field[i][1] == None:# 13 2
+				return [i,1]
+			if self.field[i][1] == self.field[i][2] != self.field[i][0] == None:# 23 1
+				return [i,0]
+
+			if self.field[0][i] == self.field[1][i] != self.field[2][i] == None:# 12 3
+				return [2,i]
+			if self.field[0][i] == self.field[2][i] != self.field[1][i] == None:# 13 2
+				return [1,i]
+			if self.field[1][i] == self.field[2][i] != self.field[0][i] == None:# 23 1
+				return [0,i]
+
+		# По диагоналям >>>
+		if self.field[0][0] == self.field[1][1] != self.field[2][2] == None:# 12 3
+			return [2,2]
+		if self.field[0][0] == self.field[2][2] != self.field[1][1] == None:# 13 2
+			return [1,1]
+		if self.field[1][1] == self.field[2][2] != self.field[0][0] == None:# 23 1
+			return [0,0]
+
+		if self.field[0][2] == self.field[1][1] != self.field[2][0] == None:# 12 3
+			return [2,0]
+		if self.field[0][2] == self.field[2][0] != self.field[1][1] == None:# 13 2
+			return [1,1]
+		if self.field[1][1] == self.field[2][0] != self.field[0][2] == None:# 23 1
+			return [0,2]
+
+
+
 		free_positions = []
 		for j in range(9):
 			XY = self.get_XY(j)
@@ -121,8 +147,6 @@ class Main(QWidget):
 
 		if len(free_positions) != 0:
 			return random.choice(free_positions)
-		else:
-			return [0,0]
 
 
 	# Проверка поля на наличие 3 в ряд:
